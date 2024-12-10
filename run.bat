@@ -1,0 +1,1 @@
+java -jar .\build\libs\albion_navigator_parser-1.0.jar
