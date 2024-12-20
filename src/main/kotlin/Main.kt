@@ -10,6 +10,9 @@ import java.awt.Toolkit
 import java.awt.image.BufferedImage
 import java.awt.image.MultiResolutionImage
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 import javax.imageio.ImageIO
 
 class GlobalHotkeyListener : NativeKeyListener, NativeMouseListener {
@@ -43,19 +46,14 @@ class GlobalHotkeyListener : NativeKeyListener, NativeMouseListener {
                 return
             }
 
-            val transform = java.awt.GraphicsEnvironment
-                .getLocalGraphicsEnvironment()
-                .defaultScreenDevice
-                .defaultConfiguration
-                .defaultTransform
-            val scaleX = transform.scaleX
-            val scaleY = transform.scaleY
+            val tempDir = System.getProperty("java.io.tmpdir")
+            val subDir = "albion-navigator"
+            val fileName = "${System.currentTimeMillis()}.png"
+            val filePath: Path = Paths.get(tempDir, subDir, fileName)
 
-            val mousePosition = MouseInfo.getPointerInfo().location
-            val physicalMouseX = (mousePosition.x * scaleX).toInt()
-            val physicalMouseY = (mousePosition.y * scaleY).toInt()
+            Files.createDirectories(filePath.parent)
 
-            val outputFile = File("${System.currentTimeMillis()}-${physicalMouseX}-${physicalMouseY}.png")
+            val outputFile = File(filePath.toUri())
             ImageIO.write(screenshot as BufferedImage, "png", outputFile)
 
             println("Screenshot saved as ${outputFile.absolutePath}")
